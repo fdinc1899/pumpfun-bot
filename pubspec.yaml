@@ -1,0 +1,28 @@
+name: pumpfun_bot
+description: "Pump.fun için tarama + teknik analiz tabanlı yarı-otomatik trading uygulaması (yalnızca uygulama açıkken çalışır)."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.2                # state management (önceki projeyle aynı yaklaşım)
+  http: ^1.2.2                    # REST çağrıları (PumpPortal, RPC)
+  web_socket_channel: ^2.4.5      # PumpPortal canlı token akışı
+  flutter_secure_storage: ^9.2.2  # private key'i cihazda şifreli saklamak için
+  solana: ^0.31.1+2               # Solana keypair / imza / RPC işlemleri
+  fl_chart: ^0.68.0               # fiyat / P&L grafiği
+  intl: ^0.19.0                   # sayı/tarih biçimlendirme
+  bs58: ^1.0.2                    # base58 encode/decode (Solana adresleri)
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
