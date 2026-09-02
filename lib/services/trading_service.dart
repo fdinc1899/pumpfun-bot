@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:solana/solana.dart';
-import 'package:solana/encoder.dart';
 import 'pumpportal_service.dart';
 import 'wallet_service.dart';
 
@@ -44,7 +43,7 @@ class TradingService {
       final keyPair = wallet.keyPairOrThrow;
       final publicKey = await keyPair.address;
 
-      final built = await pumpPortal.buildTradeTransaction(
+      await pumpPortal.buildTradeTransaction(
         publicKey: publicKey,
         action: 'buy',
         mint: mint,
@@ -54,8 +53,9 @@ class TradingService {
         priorityFeeLamports: priorityFeeLamports,
       );
 
-      final signature = await _signAndSend(built['rawTransaction'] as Uint8List, keyPair);
-      return TradeResult(success: true, signature: signature, wasDryRun: false);
+      throw UnimplementedError(
+        'Gercek islem imzalama henuz tamamlanmadi. Once Dry-Run modunda test edin.',
+      );
     } catch (e) {
       return TradeResult(success: false, error: e.toString(), wasDryRun: false);
     }
@@ -76,7 +76,7 @@ class TradingService {
       final keyPair = wallet.keyPairOrThrow;
       final publicKey = await keyPair.address;
 
-      final built = await pumpPortal.buildTradeTransaction(
+      await pumpPortal.buildTradeTransaction(
         publicKey: publicKey,
         action: 'sell',
         mint: mint,
@@ -86,20 +86,12 @@ class TradingService {
         priorityFeeLamports: priorityFeeLamports,
       );
 
-      final signature = await _signAndSend(built['rawTransaction'] as Uint8List, keyPair);
-      return TradeResult(success: true, signature: signature, wasDryRun: false);
+      throw UnimplementedError(
+        'Gercek islem imzalama henuz tamamlanmadi. Once Dry-Run modunda test edin.',
+      );
     } catch (e) {
       return TradeResult(success: false, error: e.toString(), wasDryRun: false);
     }
-  }
-
-  Future<String> _signAndSend(Uint8List rawTx, Ed25519HDKeyPair keyPair) async {
-    final signedTx = await keyPair.signMessage(message: rawTx);
-    final signature = await solanaClient.rpcClient.sendTransaction(
-      SignedTx.fromBytes(rawTx).encode(),
-      preflightCommitment: Commitment.confirmed,
-    );
-    return signature;
   }
 
   Future<double> getSolBalance(String publicAddress) async {
