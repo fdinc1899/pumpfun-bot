@@ -18,8 +18,6 @@ class TradeResult {
   });
 }
 
-/// Alım/satım emirlerini gerçekleştirir. DRY_RUN=true iken hiçbir
-/// gerçek işlem ağa gönderilmez, sadece simüle edilir ve loglanır.
 class TradingService {
   final PumpPortalService pumpPortal;
   final WalletService wallet;
@@ -39,13 +37,12 @@ class TradingService {
     required bool dryRun,
   }) async {
     if (dryRun) {
-      // Gerçek işlem yapılmaz; UI ve loglar için başarı simülasyonu döner.
       return TradeResult(success: true, wasDryRun: true, signature: 'DRY_RUN');
     }
 
     try {
       final keyPair = wallet.keyPairOrThrow;
-      final publicKey = await keyPair.extract().then((k) => k.address);
+      final publicKey = await keyPair.address;
 
       final built = await pumpPortal.buildTradeTransaction(
         publicKey: publicKey,
@@ -77,7 +74,7 @@ class TradingService {
 
     try {
       final keyPair = wallet.keyPairOrThrow;
-      final publicKey = await keyPair.extract().then((k) => k.address);
+      final publicKey = await keyPair.address;
 
       final built = await pumpPortal.buildTradeTransaction(
         publicKey: publicKey,
@@ -97,9 +94,6 @@ class TradingService {
   }
 
   Future<String> _signAndSend(Uint8List rawTx, Ed25519HDKeyPair keyPair) async {
-    // PumpPortal, imzasız serileştirilmiş bir işlem döner. Burada
-    // cüzdanla imzalayıp Solana ağına gönderiyoruz. Private key
-    // bu adımın dışına asla çıkmaz.
     final signedTx = await keyPair.signMessage(message: rawTx);
     final signature = await solanaClient.rpcClient.sendTransaction(
       SignedTx.fromBytes(rawTx).encode(),
