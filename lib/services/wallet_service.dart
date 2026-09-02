@@ -1,6 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:solana/solana.dart';
-import 'package:bs58/bs58.dart' as bs58;
+import 'package:solana/base58.dart';
 
 class WalletService {
   static const _storage = FlutterSecureStorage(
@@ -16,7 +16,7 @@ class WalletService {
 
   Future<void> importPrivateKey(String base58PrivateKey) async {
     final keyPair = await Ed25519HDKeyPair.fromPrivateKeyBytes(
-      privateKey: _decodeBase58(base58PrivateKey),
+      privateKey: base58decode(base58PrivateKey),
     );
     await _storage.write(key: _keyStorageKey, value: base58PrivateKey);
     _keyPair = keyPair;
@@ -27,7 +27,7 @@ class WalletService {
     final saved = await _storage.read(key: _keyStorageKey);
     if (saved == null) return false;
     final keyPair = await Ed25519HDKeyPair.fromPrivateKeyBytes(
-      privateKey: _decodeBase58(saved),
+      privateKey: base58decode(saved),
     );
     _keyPair = keyPair;
     _publicAddress = await keyPair.address;
@@ -45,10 +45,5 @@ class WalletService {
       throw StateError('Cuzdan yuklenmedi. Once cuzdani ice aktarin.');
     }
     return _keyPair!;
-  }
-List<int> _decodeBase58(String value) {
-    return bs58.base58decode(value);
-  }
-  
   }
 }
