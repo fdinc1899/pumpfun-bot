@@ -1,10 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:solana/solana.dart';
+import 'package:bs58/bs58.dart' as bs58;
 
-/// Cüzdanı cihazın güvenli deposunda (Keychain / Keystore) saklar.
-/// ÖNEMLİ: Private key hiçbir zaman düz metin olarak dosyaya, loga
-/// veya herhangi bir sunucuya gönderilmez. Sadece bu servis içinde,
-/// imzalama anında kullanılır.
 class WalletService {
   static const _storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
@@ -17,18 +14,15 @@ class WalletService {
   bool get isUnlocked => _keyPair != null;
   String? get publicAddress => _publicAddress;
 
-  /// Base58 formatındaki private key'i güvenli depoya kaydeder.
   Future<void> importPrivateKey(String base58PrivateKey) async {
     final keyPair = await Ed25519HDKeyPair.fromPrivateKeyBytes(
       privateKey: _decodeBase58(base58PrivateKey),
     );
     await _storage.write(key: _keyStorageKey, value: base58PrivateKey);
     _keyPair = keyPair;
-    _publicAddress = await keyPair.extract().then((k) => k.address);
+    _publicAddress = await keyPair.address;
   }
 
-  /// Uygulama açılışında, daha önce kaydedilmiş cüzdan varsa yükler.
-  /// Kullanıcı her açılışta bir PIN/biyometrik onay vermeli (bkz. main.dart).
   Future<bool> tryLoadSavedWallet() async {
     final saved = await _storage.read(key: _keyStorageKey);
     if (saved == null) return false;
@@ -36,7 +30,7 @@ class WalletService {
       privateKey: _decodeBase58(saved),
     );
     _keyPair = keyPair;
-    _publicAddress = await keyPair.extract().then((k) => k.address);
+    _publicAddress = await keyPair.address;
     return true;
   }
 
@@ -48,13 +42,12 @@ class WalletService {
 
   Ed25519HDKeyPair get keyPairOrThrow {
     if (_keyPair == null) {
-      throw StateError('Cüzdan yüklenmedi. Önce cüzdanı içe aktarın.');
+      throw StateError('Cuzdan yuklenmedi. Once cuzdani ice aktarin.');
     }
     return _keyPair!;
   }
 
   List<int> _decodeBase58(String value) {
-    // solana paketindeki base58 decoder'ı kullanıyoruz
-    return base58decode(value);
+    return bs58.decode(value);
   }
 }
