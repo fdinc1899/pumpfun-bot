@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   provider: ^6.1.2                # state management (önceki projeyle aynı yaklaşım)
   http: ^1.2.2                    # REST çağrıları (PumpPortal, RPC)
-web_socket_channel: ^3.0.3       PumpPortal canlı token akışı
+web_socket_channel: ^3.0.3      PumpPortal canlı token akışı
   flutter_secure_storage: ^9.2.2  # private key'i cihazda şifreli saklamak için
   solana: ^0.31.1+2               # Solana keypair / imza / RPC işlemleri
   fl_chart: ^0.68.0               # fiyat / P&L grafiği
