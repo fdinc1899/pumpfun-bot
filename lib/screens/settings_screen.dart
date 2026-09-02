@@ -261,9 +261,11 @@ class _WalletCardState extends State<_WalletCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Private key'inizi (Base58 formatında) girin. Bu bilgi yalnızca '
-              'cihazınızın güvenli deposunda (Keychain/Keystore) şifreli olarak '
-              'tutulur, hiçbir sunucuya gönderilmez.',
+              "Private key'inizi (Base58 formatında) girin. Bu bilgi yalnızca "
+"cihazınızın güvenli deposunda (Keychain/Keystore) şifreli olarak "
+"tutulur, hiçbir sunucuya gönderilmez.",
+              
+      
               style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
             ),
             const SizedBox(height: 10),
