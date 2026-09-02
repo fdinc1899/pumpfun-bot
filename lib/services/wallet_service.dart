@@ -46,8 +46,9 @@ class WalletService {
     }
     return _keyPair!;
   }
-
-  List<int> _decodeBase58(String value) {
-    return bs58.decode(value);
+List<int> _decodeBase58(String value) {
+    return bs58.base58decode(value);
+  }
+  
   }
 }
